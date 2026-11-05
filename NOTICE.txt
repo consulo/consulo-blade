@@ -1,0 +1,2 @@
+The Blade file icon (src/main/resources/ICON-LIB/*/consulo.blade.BladeIconGroup/blade.svg) is from vscode-icons
+(https://github.com/vscode-icons/vscode-icons, icons/file_type_blade.svg), MIT License, Copyright The vscode-icons Team.

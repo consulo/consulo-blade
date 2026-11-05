@@ -1,0 +1,9 @@
+<consulo-plugin url="https://github.com/consulo/consulo-blade">
+    <id>consulo.blade</id>
+    <name>Blade</name>
+    <version>SNAPSHOT</version>
+    <depends>consulo.php</depends>
+    <depends>com.intellij.xml</depends>
+    <vendor>consulo.io</vendor>
+    <tags><tag>template.language</tag></tags>
+</consulo-plugin>
