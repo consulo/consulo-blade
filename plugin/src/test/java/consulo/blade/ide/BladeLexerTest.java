@@ -49,6 +49,24 @@ public class BladeLexerTest {
         }
     }
 
+    /**
+     * Like Blade, an unknown {@code @name(…)} is text, for example the CSS at-rules of the inline Tailwind CSS of a
+     * Laravel welcome page
+     */
+    @Test
+    public void unknownDirectivesAreText() {
+        for (String text : List.of(
+            "@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) {a{b:c}}",
+            "@media (min-width: 40rem) {a{b:c}}",
+            "@container (width > 400px) {a{b:c}}",
+            "@layer theme{:root{--x:1}}",
+            "@scope (.card) {img{b:c}}",
+            "@datetime($d)"
+        )) {
+            types(text, "HTML_TEMPLATE");
+        }
+    }
+
     @Test
     public void echoesSkipStringsAndNestedExpressions() {
         types("{{ '}}' . foo(['x' => '}']) }}", "ECHO_START", "TEXT_BLOCK_CONTENT", "ECHO_END");
@@ -71,13 +89,6 @@ public class BladeLexerTest {
             tokens.stream().map(Token::type).toList()
         );
         assertEquals("foo([1, fn() => ')'], (object) ['x' => 2])", tokens.get(3).text());
-        types(
-            "@datetime($d)",
-            "CUSTOM_DIRECTIVE",
-            "DIRECTIVE_PARAMETER_START",
-            "DIRECTIVE_PARAMETER_CONTENT",
-            "DIRECTIVE_PARAMETER_END"
-        );
         types("@section()", "SECTION_DIRECTIVE", "DIRECTIVE_PARAMETER_START", "DIRECTIVE_PARAMETER_END");
         types("@csrf @endif", "CSRF_DIRECTIVE", "HTML_TEMPLATE", "ENDIF_DIRECTIVE");
     }

@@ -87,11 +87,12 @@ import static com.jetbrains.php.blade.psi.BladeTokenTypes.*;
         int next = zzMarkedPos;
         while (next < zzEndRead && Character.isWhitespace(zzBuffer.charAt(next))) next++;
         boolean parameter = next < zzEndRead && zzBuffer.charAt(next) == '(';
-        if (definition == null && !parameter) return HTML_TEMPLATE;
+        // like Blade, an unknown @name is text: CSS at-rules such as @supports (…), mail addresses, Alpine attributes
+        if (definition == null) return HTML_TEMPLATE;
         if (parameter) yybegin(ST_PARAMETER_START);
         else if (name.equals("php")) yybegin(ST_PHP_BLOCK);
         else if (name.equals("verbatim")) yybegin(ST_VERBATIM);
-        return definition == null ? CUSTOM_DIRECTIVE : definition.tokenType();
+        return definition.tokenType();
     }
 %}
 IDENTIFIER=[a-zA-Z_][a-zA-Z_0-9]*

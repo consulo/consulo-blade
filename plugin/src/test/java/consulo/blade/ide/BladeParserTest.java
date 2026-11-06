@@ -59,13 +59,17 @@ public class BladeParserTest {
         assertEquals("'content'", parameter.getContentRange().substring(parameter.getText()));
     }
 
+    /**
+     * An empty parameter; like Blade, an unknown directive such as {@code @foo($d)} is text
+     */
     @Test
-    public void emptyAndCustomParameters(Context context) {
-        var file = parse(context, "@datetime()@foo($d)");
+    public void emptyParametersAndUnknownDirectives(Context context) {
+        var file = parse(context, "@section()@foo($d)");
         var first = (BladePsiDirective) file.getFirstChild();
         assertEquals("", first.getParameter().getParameterText());
         assertEquals(2, first.getParameter().getNode().getChildren(null).length);
-        assertSame(CUSTOM_DIRECTIVE, first.getDirectiveElementType());
+        assertSame(SECTION_DIRECTIVE, first.getDirectiveElementType());
+        assertEquals(1, java.util.Arrays.stream(file.getChildren()).filter(e -> e instanceof BladePsiDirective).count());
     }
 
     @Test

@@ -10,13 +10,11 @@ import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiFile;
 import consulo.undoRedo.CommandProcessor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Disabled("CodeStyleInternalHelper is implemented only in ide-impl, which the headless application doesn't load")
 @ExtendWith(HeadlessProjectExtension.class)
 @AllowLogError("consulo.xml.impl.internal.ExternalResource")
 public class BladeFormattingIntegrationTest {
@@ -102,6 +100,22 @@ public class BladeFormattingIntegrationTest {
             @section('title', 'Home')
             <p>{{   $title   }}</p>
             @include('partials.footer')
+            """, formatted);
+    }
+
+    @Test
+    public void echoesInsideAttributesKeepTheirText(CodeInsightTestFixture fixture) throws Exception {
+        String formatted = reformat(fixture, "attributes.blade.php", """
+            @section('content')
+            <a href="{{ route('about') }}">{{ __('messages.goodbye') }}</a>
+            <input value="{{ $value }}" @if($disabled) disabled @endif>
+            @endsection
+            """);
+        assertEquals("""
+            @section('content')
+                <a href="{{ route('about') }}">{{ __('messages.goodbye') }}</a>
+                <input value="{{ $value }}" @if($disabled) disabled @endif>
+            @endsection
             """, formatted);
     }
 }
